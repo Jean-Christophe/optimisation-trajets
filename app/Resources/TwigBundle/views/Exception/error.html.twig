@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Erreur{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Une erreur s'est produite</h1>
+    <h2>Le serveur a retourné une erreur : {{ status_code }} {{ status_text }}.</h2>
+
+    <p>Veuillez nous excuser pour la gêne rencontrée, nous travaillons à sa résolution.</p>
+    <p>Cliquez sur <a href="{{ path('fos_user_security_logout') }}">ce lien pour revenir à l'écran d'authentification.</a></p>
+</div>
+{% endblock %}

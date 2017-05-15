@@ -1,0 +1,35 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<h1 class="text-center">Modification de l'e-mail</h1>
+
+{{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+    <div class="row">
+        <div class="form-group col-sm-6">
+            {{ form_label(form.email)}}
+            {% if not form.email.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.email) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.email) }}
+        </div>
+        <div class="form-group col-sm-6">
+            {{ form_label(form.current_password)}}
+            {% if not form.current_password.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.current_password) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.current_password) }}
+        </div>
+    </div>
+    <div id="bouton_valider">
+        <input class="btn btn-lg btn-success" type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+    </div>
+{{ form_end(form) }}
+
+<ul>
+    <li>
+        <a href="{{ path('fos_user_profile_show') }}">Retour au profil</a>
+    </li>
+</ul>

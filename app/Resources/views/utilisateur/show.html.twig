@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Récapitulatif de l'utilisateur ajouté</h1>
+
+        <div class="row">
+            <dl>
+                <dt><label>{{ utilisateur.prenom }} {{ utilisateur.nom }}</label></dt>
+                <dd><label>E-mail : </label> {{ utilisateur.email }}</dd>
+                <dd><label>Rôle : </label>
+                {% for role in utilisateur.roles %}
+                    {{ role }}
+                {% endfor %}
+                </dd>
+                <dd><label>Actif : </label>
+                {% if utilisateur.enabled == true %}
+                    oui
+                {% else %}
+                    non
+                {% endif %}
+                </dd>
+            </dl>
+        </div>
+        <ul>
+            <li>
+                <a href="{{ path('utilisateurs_edit', { 'id': utilisateur.id }) }}">Modifier</a>
+            </li>
+            <li>
+                <a href="{{ path('utilisateurs_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+        <div>
+            {{ form_start(delete_form) }}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Attention : </span>
+                <button class="btn btn-danger" type="submit" onclick="return(confirm('Etes-vous sûr de vouloir supprimer cet utilisateur? La suppression est irréversible.'));">Supprimer cet utilisateur</button>
+            </div>
+            {{ form_end(delete_form) }}
+        </div>
+    </div>
+{% endblock %}

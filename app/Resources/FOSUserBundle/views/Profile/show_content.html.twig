@@ -1,0 +1,30 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<h1 class="text-center">Profil de {{ user.prenom }} {{ user.nom }}</h1>
+<div class="row">
+    <dl>
+        <dd><label>Nom : </label> {{ user.nom }}</dd>
+        <dd><label>Prénom : </label> {{ user.prenom }}</dd>
+        <dd><label>{{ 'profile.show.email'|trans }} : </label> {{ user.email }}</dd>
+        <dd><label>Rôle : </label>
+            {% for role in user.roles %}
+                {{ role }}
+            {% endfor %}
+        </dd>
+        <dd><label>Actif : </label>
+            {% if user.enabled == true %}
+                oui
+            {% else %}
+                non
+            {% endif %}
+        </dd>
+    </dl>
+    <ul>
+        <li>
+            <a href="{{ path('fos_user_profile_edit') }}">Modifier mon adresse e-mail</a>
+        </li>
+        <li>
+            <a href="{{ path('fos_user_change_password') }}">Modifier mon mot de passe</a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,24 @@
+lieux_index:
+    path:     /
+    defaults: { _controller: "TrajetsBundle:Lieu:index" }
+    methods:  GET
+
+lieux_show:
+    path:     /{id}/show
+    defaults: { _controller: "TrajetsBundle:Lieu:show" }
+    methods:  GET
+
+lieux_new:
+    path:     /new
+    defaults: { _controller: "TrajetsBundle:Lieu:new" }
+    methods:  [GET, POST]
+
+lieux_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "TrajetsBundle:Lieu:edit" }
+    methods:  [GET, POST]
+
+lieux_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "TrajetsBundle:Lieu:delete" }
+    methods:  DELETE

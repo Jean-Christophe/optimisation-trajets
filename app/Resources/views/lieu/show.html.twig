@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Récapitulatif du lieu ajouté</h1>
+
+        <div class="row">
+            <dl>
+                <dt><label>Nom : </label> {{ lieu.nom }}</dt>
+                <dd><label>Adresse : </label> {{ lieu.adresse }}</dd>
+                <dd><label>Code postal : </label> {{ lieu.cpo }}</dd>
+                <dd><label>Ville : </label> {{ lieu.ville }}</dd>
+                <dd><label>Latitude : </label> {{ lieu.latitude }}</dd>
+                <dd><label>Longitude : </label> {{ lieu.longitude }}</dd>
+                {% if lieu.label == 'B' %}
+                <dd><label>Type de lieu : </label> Boutique</dd>
+                {% elseif lieu.label == 'C' %}
+                <dd><label>Type de lieu : </label> Consigne</dd>
+                {% endif %}
+            </dl>
+        </div>
+
+        <ul>
+            <li>
+                <a href="{{ path('lieux_edit', { 'id': lieu.id }) }}">Modifier</a>
+            </li>
+            <li>
+                <a href="{{ path('lieux_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+        {% if is_granted('ROLE_ADMIN') %}
+        <div>
+            {{ form_start(delete_form) }}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Attention : </span>
+                <button class="btn btn-danger" type="submit" onclick="return(confirm('Etes-vous sûr de vouloir supprimer ce lieu? La suppression est irréversible.'));">Supprimer ce lieu</button>
+            </div>
+            {{ form_end(delete_form) }}
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

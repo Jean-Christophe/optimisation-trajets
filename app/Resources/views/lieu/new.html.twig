@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Ajouter un lieu</h1>
+        {% if message is defined %}
+            <div id="message" class="alert alert-info">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+
+        {{ form_start(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.nom)}}
+            {% if not form.nom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.nom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.adresse)}}
+            {% if not form.adresse.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.adresse) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.adresse) }}
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-3">
+                {{ form_label(form.cpo)}}
+                {% if not form.cpo.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.cpo) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.cpo) }}
+            </div>
+
+            <div class="col-sm-9">
+                {{ form_label(form.ville)}}
+                {% if not form.ville.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.ville) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.ville) }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-6">
+                {{ form_label(form.latitude)}}
+                {% if not form.latitude.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.latitude) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.latitude) }}
+            </div>
+
+            <div class="col-sm-6">
+                {{ form_label(form.longitude)}}
+                {% if not form.longitude.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.longitude) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.longitude) }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-8">
+                {{ form_label(form.label)}}
+                {% if not form.label.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.label) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.label) }}
+            </div>
+
+            <div id="bouton_valider" class="col-sm-4">
+                <input class="btn btn-lg btn-success" type="submit" value="Ajouter" />
+            </div>
+        </div>
+        {{ form_end(form) }}
+
+        <ul>
+            <li>
+                <a href="{{ path('lieux_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

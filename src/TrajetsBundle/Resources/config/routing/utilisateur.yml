@@ -1,0 +1,24 @@
+utilisateurs_index:
+    path:     /
+    defaults: { _controller: "TrajetsBundle:Utilisateur:index" }
+    methods:  GET
+
+utilisateurs_show:
+    path:     /{id}/show
+    defaults: { _controller: "TrajetsBundle:Utilisateur:show" }
+    methods:  GET
+
+utilisateurs_new:
+    path:     /new
+    defaults: { _controller: "TrajetsBundle:Utilisateur:new" }
+    methods:  [GET, POST]
+
+utilisateurs_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "TrajetsBundle:Utilisateur:edit" }
+    methods:  [GET, POST]
+
+utilisateurs_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "TrajetsBundle:Utilisateur:delete" }
+    methods:  DELETE

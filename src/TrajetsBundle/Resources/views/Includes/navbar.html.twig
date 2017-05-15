@@ -1,0 +1,42 @@
+<ul id="nav_large" class="nav nav-tabs">
+    <li role="presentation"
+            {% if app.request.attributes.get('_route') == 'trajets_homepage' %}
+        class="active"
+            {% endif %}>
+        <a href="{{ path('trajets_homepage') }}">Carte</a>
+    </li>
+    <li role="presentation"
+            {% if 'fos_user_' in app.request.attributes.get('_route') %}
+        class="active"
+            {% endif %}>
+        <a href="{{ path('fos_user_profile_show') }}">Profil</a>
+    </li>
+    <li role="presentation"
+            {% if 'lieux_' in app.request.attributes.get('_route') %}
+        class="active"
+            {% endif %}>
+        <a href="{{ path('lieux_index') }}">Lieux</a>
+    </li>
+    {% if is_granted('ROLE_ADMIN') %}
+        <li role="presentation"
+                {% if 'utilisateurs_' in app.request.attributes.get('_route') %}
+            class="active"
+                {% endif %}>
+            <a href="{{ path('utilisateurs_index') }}">Utilisateurs</a>
+        </li>
+    {% endif %}
+</ul>
+
+<nav id="nav_small">
+    <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Menu<span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li><a href="{{ path('trajets_homepage') }}">Carte</a></li>
+            <li><a href="{{ path('fos_user_profile_show') }}">Profil</a></li>
+            <li><a href="{{ path('lieux_index') }}">Lieux</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('utilisateurs_index') }}">Utilisateurs</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

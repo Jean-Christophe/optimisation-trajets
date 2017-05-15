@@ -1,0 +1,11 @@
+trajets_homepage:
+    path:     /
+    defaults: { _controller: TrajetsBundle:Carte:affichage }
+
+trajets_lieux:
+    resource: "@TrajetsBundle/Resources/config/routing/lieu.yml"
+    prefix:   /lieux
+
+trajets_utilisateurs:
+    resource: "@TrajetsBundle/Resources/config/routing/utilisateur.yml"
+    prefix:   /utilisateurs

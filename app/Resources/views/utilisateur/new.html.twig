@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Ajouter un utilisateur</h1>
+
+        {{ form_start(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.nom) }}
+            {% if not form.nom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.nom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.nom) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.prenom) }}
+            {% if not form.prenom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.prenom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.prenom) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.email) }}
+            {% if not form.email.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.email) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.email) }}
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-6">
+            {{ form_label(form.password) }}
+            {% if not form.password.vars.valid %}
+                {{ form_errors(form.password) }}
+            {% endif %}
+            {{ form_widget(form.password) }}
+            </div>
+
+            <div class="col-xs-6">
+                {{ form_label(form.enabled) }}
+                {% if not form.enabled.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.enabled) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.enabled) }}
+            </div>
+            <div class="col-xs-6">
+                {{ form_label(form.roles)}}
+                {% if not form.roles.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.roles) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(form.roles) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="bouton_valider" class="text-right">
+                <input class="btn btn-lg btn-success" type="submit" value="Ajouter" />
+            </div>
+        </div>
+        {{ form_end(form) }}
+        <ul>
+            <li>
+                <a href="{{ path('utilisateurs_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

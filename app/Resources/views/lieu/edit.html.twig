@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Modifier un lieu</h1>
+        {% if app.request.query.get("message") is defined and app.request.query.get("message") is not empty %}
+            <div id="message" class="alert alert-info">
+                <p>{{ app.request.query.get("message") }}</p>
+            </div>
+        {% endif %}
+
+        {{ form_start(edit_form) }}
+        <div class="form-group">
+            {{ form_label(edit_form.nom)}}
+            {% if not edit_form.nom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.nom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(edit_form.adresse)}}
+            {% if not edit_form.adresse.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.adresse) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.adresse) }}
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-3">
+                {{ form_label(edit_form.cpo)}}
+                {% if not edit_form.cpo.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.cpo) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.cpo) }}
+            </div>
+
+            <div class="col-sm-9">
+                {{ form_label(edit_form.ville)}}
+                {% if not edit_form.ville.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.ville) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.ville) }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-6">
+                {{ form_label(edit_form.latitude)}}
+                {% if not edit_form.latitude.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.latitude) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.latitude) }}
+            </div>
+
+            <div class="col-sm-6">
+                {{ form_label(edit_form.longitude)}}
+                {% if not edit_form.longitude.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.longitude) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.longitude) }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-8">
+                {{ form_label(edit_form.label)}}
+                {% if not edit_form.label.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.label) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.label) }}
+            </div>
+
+            <div id="bouton_valider" class="col-sm-4">
+                <input class="btn btn-lg btn-success" type="submit" value="Modifier" />
+            </div>
+        </div>
+        {{ form_end(edit_form) }}
+
+        <ul>
+            <li>
+                <a href="{{ path('lieux_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+        {% if is_granted('ROLE_ADMIN') %}
+        <div>
+            {{ form_start(delete_form) }}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Attention : </span>
+                <button class="btn btn-danger" type="submit" onclick="return(confirm('Etes-vous sûr de vouloir supprimer ce lieu? La suppression est irréversible.'));">Supprimer ce lieu</button>
+            </div>
+            {{ form_end(delete_form) }}
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

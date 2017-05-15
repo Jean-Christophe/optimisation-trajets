@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Gestion des utilisateurs</h1>
+        <div class="text-center">
+            <a href="{{ path('utilisateurs_new') }}">
+                <button id="btn_ajout_lieu" class="btn btn-primary">Ajouter un utilisateur</button>
+            </a>
+        </div>
+        <div class="row">
+            <h2>Liste des utilisateurs</h2>
+            {% for utilisateur in utilisateurs %}
+                <ul class="list-unstyled col-md-4 col-sm-6">
+                    <h4>{{ utilisateur.prenom }} {{ utilisateur.nom }}
+                        <a href="{{ path('utilisateurs_edit', { 'id': utilisateur.id }) }}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                    </h4>
+                    <li>E-mail : {{ utilisateur.email }}<br />
+                    Rôle : {% for role in utilisateur.roles %}
+                        {{ role }}
+                    {% endfor %}
+                        <br />
+                    Actif :
+                        {% if utilisateur.enabled == 1 %}
+                        oui
+                        {% else %}
+                        non
+                        {% endif %}
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <a href="{{ path('utilisateurs_new') }}">
+                <button id="btn_ajout_lieu" class="btn btn-primary">Ajouter un utilisateur</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}

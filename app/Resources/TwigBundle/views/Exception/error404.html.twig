@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Page non trouvée{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Page non trouvée</h1>
+
+        <p>Nous sommes désolés, la page que vous recherchez n'existe pas.</p>
+        <p>Cliquez sur <a href="{{ path('fos_user_security_logout') }}">ce lien</a> pour revenir à l'écran d'authentification.</p>
+    </div>
+{% endblock %}

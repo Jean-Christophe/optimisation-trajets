@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Gestion des lieux</h1>
+        <div class="text-center">
+            <a href="{{ path('lieux_new') }}"><button id="btn_ajout_lieu" class="btn btn-primary">Ajouter un lieu</button></a>
+        </div>
+        <div class="row">
+            <h2 id="boutiques">Boutiques  <a href="#consignes">Voir les consignes</a></h2>
+            {% for boutique in boutiques %}
+                <ul class="list-unstyled col-md-4 col-sm-6">
+                    <h4>{{ boutique.nom }}
+                        <a href="{{ path('lieux_edit', { 'id': boutique.id }) }}"><span class="glyphicon glyphicon-edit"></span></a>
+                    </h4>
+                    <li>{{ boutique.adresse }},<br />{{ boutique.cpo }} {{ boutique.ville }}<br />
+                        Latitude : {{ boutique.latitude }}<br />
+                        Longitude : {{ boutique.longitude }}</li>
+                </ul>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <a href="{{ path('lieux_new') }}"><button id="btn_ajout_lieu" class="btn btn-primary">Ajouter un lieu</button></a>
+        </div>
+        <div class="row">
+            <h2 id="consignes">Consignes  <a href="#boutiques">Voir les boutiques</a></h2>
+            {% for consigne in consignes %}
+                <ul class=" list-unstyled col-md-4 col-sm-6">
+                    <h4>{{ consigne.nom }}
+                        <a href="{{ path('lieux_edit', { 'id': consigne.id }) }}"><span class="glyphicon glyphicon-edit"></span></a>
+                    </h4>
+                    <li>{{ consigne.adresse }},<br />{{ consigne.cpo }} {{ consigne.ville }}<br />
+                        Latitude : {{ consigne.latitude }}<br />
+                        Longitude : {{ consigne.longitude }}</li>
+                </ul>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <a href="{{ path('lieux_new') }}"><button id="btn_ajout_lieu" class="btn btn-primary">Ajouter un lieu</button></a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,155 @@
+/*
+#####ELEMENTS GENERAUX#####
+ */
+h1{
+    font-size: 1.6em;
+}
+/*
+#####FIN ELEMENTS GENERAUX#####
+ */
+
+/*
+#####CARTE#####
+*/
+#map{
+    height: 100vh;
+}
+
+/* Div contenant la carte Google Maps positionnée à droite */
+#fixed{
+    position: fixed;
+    right: 0;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#texte_gauche h1, #texte_gauche h3{
+    margin-top: 10px;
+}
+
+#texte_gauche h3{
+    font-size: 1.2em;
+}
+
+#afficher_lieux, #editer_trajet, #valider_calcul, .marker_editer_trajet, #resume_trajet{
+    display: none;
+}
+
+#resume_trajet{
+    border-bottom: solid #eee 1px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+#resume_trajet .label{
+    color: black;
+    font-size: 1.1em;
+}
+
+#valider_calcul{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    vertical-align: middle;
+}
+
+#valider_calcul .btn{
+    padding: 0;
+}
+
+#bouton_retour{
+    margin-bottom: 5px;
+}
+
+@media all and (max-width: 991px) {
+    #texte_gauche h1{
+        font-size: 1.3em;
+    }
+    #texte_gauche h3{
+        font-size: 1.1em;
+    }
+    #texte_gauche input{
+        font-size: 0.85em;
+    }
+    #resume_trajet, #construction_trajet{
+        font-size: 0.9em;
+    }
+    #construction_trajet .form-control{
+        font-size: 0.9em;
+    }
+
+    /* Div contenant la carte Google Maps positionnée à droite */
+    #fixed{
+        position: relative;
+    }
+
+    #boutons_balises{
+        position: relative;
+    }
+
+    #boutons_balises div{
+        margin: auto;
+    }
+
+    #boutons_all{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+}
+
+@media all and (max-width: 650px) {
+    #boutons_all{
+        position: relative;
+        margin-top: 10px !important;
+    }
+
+    #boutons_balises div{
+        display: block;
+        width: 100%;
+    }
+}
+
+@media all and (max-width: 350px) {
+    #nav_large{
+        display: none;
+    }
+    #nav_small{
+        display: block;
+    }
+}
+/*
+#####FIN CARTE#####
+ */
+
+.divACentrer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.divACentrer button{
+    font-size: 2em;
+    width: 500px;
+    height: 80px;
+    margin-bottom: 80px;
+}
+
+#boutiques a, #consignes a{
+    font-size: 0.5em;
+}
+
+#btn_ajout_utilisateur{
+    margin-bottom: 5px;
+}
+
+#bouton_valider{
+    text-align: right;
+    margin: 20px 0;
+}
+
+#nav_small{
+    display: none;
+}
+

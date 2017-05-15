@@ -1,0 +1,174 @@
+{% extends "base.html.twig" %}
+
+    {% block title %}Optimisation de trajets{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-3" id="texte_gauche">
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+
+                    <nav>
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Menu<span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ path('trajets_homepage') }}">Carte</a></li>
+                                <li><a href="{{ path('fos_user_profile_show') }}">Profil</a></li>
+                                <li><a href="{{ path('lieux_index') }}">Lieux</a></li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li><a href="{{ path('utilisateurs_index') }}">Utilisateurs</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+
+                    {{ app.user.username }}
+                    -
+                    <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                {% else %}
+                    <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+                {% endif %}
+                <h1 class="text-center">Optimisation de trajet</h1>
+
+                <div id="prepa_trajet">
+                    <div id="boutons_balises" class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
+                            <h3>Consignes</h3>
+                            <div class="form-group">
+                                <div class="row">
+                                    <input class="btn btn-success btn-sm col-xs-6" id="show_consignes" type="button" value="Montrer" />
+                                    <input class="btn btn-warning btn-sm col-xs-6" id="hide_consignes" type="button" value="Cacher" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
+                            <h3>Boutiques</h3>
+                            <div class="form-group">
+                                <div class="row">
+                                    <input class="btn btn-success btn-sm col-xs-6" id="show_boutiques" type="button" value="Montrer" />
+                                    <input class="btn btn-warning btn-sm col-xs-6" id="hide_boutiques" type="button" value="Cacher" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="boutons_all" class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
+                            <h3></h3>
+                            <div class="form-group">
+                                <div class="row">
+                                    <input class="btn btn-success btn-sm col-xs-6" id="show_all" type="button" value="Montrer tout" />
+                                    <input class="btn btn-warning btn-sm col-xs-6" id="hide_all" type="button" value="Cacher tout" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div id="resume_trajet" class="row">
+                        <div class="col-sm-12"><label>Départ</label><p id="depart"></p></div>
+                        <div class="col-sm-12"><label>Etapes</label>
+                            <ul id="liste_etapes"></ul>
+                        </div>
+                        <div class="col-sm-12"><label>Destination</label><p id="arrivee"></p></div>
+                    </div>
+
+                    <div id="construction_trajet">
+                        <div id="adresse_origine" class="form-group">
+                            <label for="adresse_depart">Départ</label>
+                            <input class="form-control col-md-8" id="adresse_depart" type="text" placeholder="Ex. : Métro République, Rennes" />
+                        </div>
+                        <div id="afficher_lieux" class="form-group">
+                            <label for="duree_max">Afficher les lieux à moins de</label>
+                            <div class="col-sm-12 col-md-6">
+                                <select id="duree_max" class="form-control">
+                                    <option value="10">10 min</option>
+                                    <option value="15">15 min</option>
+                                    <option value="30">30 min</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <select id="moyen_locomotion" class="form-control">
+                                    <option value="BICYCLING">à vélo</option>
+                                    <option value="DRIVING">en voiture</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div id="editer_trajet">
+                            <div class="form-inline">
+                                <label for="etapes">Ajouter une étape</label>
+                                <select id="etapes" class="form-control">
+                                    <optgroup label="Boutiques">
+                                        {% for boutique in boutiques %}
+                                            <option value="{{ boutique.id }}">{{ boutique.nom }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                    <optgroup label="Consignes">
+                                        {% for consigne in consignes %}
+                                            <option value="{{ consigne.id }}">{{ consigne.nom }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                                <input class="btn btn-success form-control" id="ajouter_etape" type="button" value="Ajouter" />
+                            </div>
+                            <div>
+                                <label for="destination">Destination</label>
+                                <select id="destination" class="form-control">
+                                    <optgroup id="optBoutiques" label="Boutiques">
+                                        {% for boutique in boutiques  %}
+                                            <option value="{{ boutique.id }}">{{ boutique.nom }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                    <optgroup id="optConsignes" label="Consignes">
+                                        {% for consigne in consignes  %}
+                                            <option value="{{ consigne.id }}">{{ consigne.nom }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                                <label for="heure_depart">Heure de départ (au format hh:mm)</label>
+                                <input class="form-control" type="text" id="heure_depart" placeholder="Heure actuelle si vide" />
+                            </div>
+                        </div>
+                        <div id="valider_calcul" class="text-center">
+                            <input class="btn btn-lg btn-success form-control" id="calculer_trajet" type="button" value="Calculer" />
+                        </div>
+                    </div>
+                </div>
+                <div id="itineraire"></div>
+            </div>
+            <div id="fixed" class="col-sm-12 col-md-9">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialisation des variables globales consignes et boutiques
+        // utiles dans map_loader.js
+
+        lieux = [];
+
+        consignes = [];
+        {% for consigne in consignes %}
+        consignes.push({{ consigne|json_encode|raw }});
+        lieux.push({{ consigne|json_encode|raw }});
+        {% endfor %}
+
+        boutiques = [];
+        {% for boutique in boutiques %}
+        boutiques.push({{ boutique|json_encode|raw }});
+        lieux.push({{ boutique|json_encode|raw }});
+        {% endfor %}
+
+    </script>
+    <script src="{{ app.request.getBasePath() }}/js/map_loader.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAICexFtyn5myRq8c6pot701UuvybNOE0Y&v=3&callback=initMap">
+    </script>
+    <!-- Pour StreetView
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyAICexFtyn5myRq8c6pot701UuvybNOE0Y&v=3&callback=initMap">
+    </script>
+    -->
+{% endblock %}

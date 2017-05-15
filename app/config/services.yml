@@ -1,0 +1,20 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+    utilisateur.form.registration:
+        class: TrajetsBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: app_user_registration }
+
+    utilisateur.form.profile:
+        class: TrajetsBundle\Form\ProfileType
+        tags:
+            - { name: form.type, alias: app_user_profile }
+
+    utilisateur.form.change.password:
+        class: TrajetsBundle\Form\ChangePasswordType
+        tags:
+            - { name: form.type, alias: app_user_change_password }

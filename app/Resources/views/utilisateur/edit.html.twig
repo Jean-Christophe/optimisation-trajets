@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+            Connecté en tant que {{ app.user.username }}
+            -
+            <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+        {% endif %}
+        <h1 class="text-center">Modifier un utilisateur</h1>
+        {% if app.request.query.get("message") is defined and app.request.query.get("message") is not empty %}
+            <div id="message" class="alert alert-info">
+                <p>{{ app.request.query.get("message") }}</p>
+            </div>
+        {% endif %}
+
+        {{ form_start(edit_form) }}
+
+        <div class="form-group">
+            {{ form_label(edit_form.nom)}}
+            {% if not edit_form.nom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.nom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(edit_form.prenom)}}
+            {% if not edit_form.prenom.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.prenom) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.prenom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(edit_form.email)}}
+            {% if not edit_form.email.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.email) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.email) }}
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ form_label(edit_form.role_utilisateur)}}
+                {% if not edit_form.role_utilisateur.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.role_utilisateur) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.role_utilisateur) }}
+            </div>
+            <div class="col-sm-4">
+                {{ form_label(edit_form.enabled)}}
+                {% if not edit_form.enabled.vars.valid %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(edit_form.enabled) }}
+                    </div>
+                {% endif %}
+                {{ form_widget(edit_form.enabled) }}
+            </div>
+            <div id="bouton_valider" class="col-sm-4">
+                <input class="btn btn-lg btn-success" type="submit" value="Modifier" />
+            </div>
+        </div>
+        {{ form_end(edit_form) }}
+
+        <ul>
+            <li>
+                <a href="{{ path('utilisateurs_index') }}">Retour à la liste</a>
+            </li>
+        </ul>
+        <div>
+            {{ form_start(delete_form) }}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Attention : </span>
+                <button class="btn btn-danger" type="submit" onclick="return(confirm('Etes-vous sûr de vouloir supprimer cet utilisateur? La suppression est irréversible.'));">Supprimer cet utilisateur</button>
+            </div>
+            {{ form_end(delete_form) }}
+        </div>
+    </div>
+{% endblock %}
