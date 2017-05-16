@@ -1,0 +1,24 @@
+trajets_index:
+    path:     /
+    defaults: { _controller: "TrajetsBundle:Trajet:index" }
+    methods:  GET
+
+trajets_show:
+    path:     /{id}/show
+    defaults: { _controller: "TrajetsBundle:Trajet:show" }
+    methods:  GET
+
+trajets_new:
+    path:     /new
+    defaults: { _controller: "TrajetsBundle:Trajet:new" }
+    methods:  [GET, POST]
+
+trajets_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "TrajetsBundle:Trajet:edit" }
+    methods:  [GET, POST]
+
+trajets_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "TrajetsBundle:Trajet:delete" }
+    methods:  DELETE

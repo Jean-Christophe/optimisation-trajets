@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Trajet list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Origine</th>
+                <th>Datedepart</th>
+                <th>Datearriveeprevue</th>
+                <th>Datearrivee</th>
+                <th>Estactif</th>
+                <th>Esteffectue</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for trajet in trajets %}
+            <tr>
+                <td><a href="{{ path('trajets_show', { 'id': trajet.id }) }}">{{ trajet.id }}</a></td>
+                <td>{{ trajet.origine }}</td>
+                <td>{% if trajet.dateDepart %}{{ trajet.dateDepart|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if trajet.dateArriveePrevue %}{{ trajet.dateArriveePrevue|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if trajet.dateArrivee %}{{ trajet.dateArrivee|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if trajet.estActif %}Yes{% else %}No{% endif %}</td>
+                <td>{% if trajet.estEffectue %}Yes{% else %}No{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('trajets_show', { 'id': trajet.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('trajets_edit', { 'id': trajet.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('trajets_new') }}">Create a new entry</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Lieu
  * @package TrajetsBundle\Entity
  * @ORM\Entity
- * @ORM\Table(name="dpb_trajets")
+ * @ORM\Table(name="dpb_trajets", indexes={@ORM\Index(name="origine_idx", columns={"origine"})})
  */
 class Trajet implements JsonSerializable
 {
@@ -28,8 +28,14 @@ class Trajet implements JsonSerializable
      */
     private $id;
     /**
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="Lieu")
+     * @ORM\Column(type="string", length=250)
+     *
+     * @Assert\NotBlank(message="Veuillez saisir un lieu de départ.")
+     * @Assert\Length(
+     *     min="5",
+     *     max="250",
+     *     minMessage="Le départ est trop court (5 caractères minimum).",
+     *     maxMessage="Le départ est trop long (250 caractères maximum).")
      */
     private $origine;
     /**

@@ -12,6 +12,7 @@ var largeInfoWindow;
 var infoWindow;
 var depart;
 var etapes = [];
+var steps = [];
 var destination;
 var directionsDisplay;
 
@@ -35,6 +36,8 @@ function initMap() {
     depart = {name: "Dépôt", position: {lat: 48.10926, lng: -1.63429}};
     // Destination par défaut : le premier élément de la liste
     destination = getLocation(1);
+
+    $("#loading").hide();
 }
 
 function initMarkersConsignes() {
@@ -197,10 +200,12 @@ function afficherEtape(){
 
 function reinitialiser(){
     etapes = [];
+    steps = [];
     document.getElementById('liste_etapes').innerHTML = '';
     document.getElementById('prepa_trajet').style.display = "block";
     document.getElementById('resume_trajet').style.display = "block";
     document.getElementById('itineraire').innerHTML = '';
+    $("#loading").hide();
 
     directionsDisplay.setMap(null);
 }
@@ -382,6 +387,7 @@ function getLocation(id){
 function addStep(id) {
     // Crée une étape avec un id
     var step = getLocation(id);
+    steps.push(step);
     var coordEtape = new google.maps.LatLng(step.latitude, step.longitude);
     var wayPoint = {location: coordEtape, stopover: true};
     var etape = {waypoint: wayPoint, step: step};
@@ -493,6 +499,11 @@ function displayDirections(){
             resume.innerHTML += 'Estimation arrivée : ' + heuresArrivee + 'h' + minutesArrivee;
             resume.innerHTML += detailResume;
 
+            console.log(steps);
+            var trajet = {origine: depart.name, destination: destination, etapes: steps, dateDepart: dateDepart,
+            dateArriveePrevue: dateArrivee, dateArrivee: null, utilisateur: null, realise: false};
+            ajouterTrajet(trajet);
+
         } else{
             window.alert('Erreur : ' + status);
         }
@@ -552,4 +563,28 @@ function populateLargeInfoWindow(marker, largeInfoWindow){
         );
         largeInfoWindow.open(map, marker);
     }
+}
+
+function ajouterTrajet(trajet)
+{
+    var path = $("#loading").attr("data-path");
+    $("#loading").show();
+
+    var data = JSON.stringify(trajet);
+    console.log(data);
+
+    $.ajax({
+        type: "POST",
+        url: path,
+        data: "data=" + data,
+        cache: false,
+        success: function(){
+            alert("Succès. Ce trajet a bien été enregistré.");
+            $("#loading").hide();
+        },
+        error: function(){
+            alert("Erreur. Ce trajet n'a pas été enregistré.");
+            $("#loading").hide();
+        }
+    });
 }

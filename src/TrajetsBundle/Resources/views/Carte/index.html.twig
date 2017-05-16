@@ -29,6 +29,16 @@
                 {% endif %}
                 <h1 class="text-center">Optimisation de trajet</h1>
 
+                <div>
+                    {% if trajet is defined %}
+                        {{ trajet.origine }}
+                    {% endif %}
+                </div>
+
+                <div id="loading" data-path="{{ path('trajets_new') }}">
+                    <img src="{{ asset('images/loading.gif') }}" />
+                </div>
+
                 <div id="prepa_trajet">
                     <div id="boutons_balises" class="row">
                         <div class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
