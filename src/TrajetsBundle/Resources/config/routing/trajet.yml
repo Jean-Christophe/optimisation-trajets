@@ -1,7 +1,7 @@
 trajets_index:
     path:     /
     defaults: { _controller: "TrajetsBundle:Trajet:index" }
-    methods:  GET
+    methods:  [GET, POST]
 
 trajets_show:
     path:     /{id}/show

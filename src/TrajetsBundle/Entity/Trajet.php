@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Lieu
  * @package TrajetsBundle\Entity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="TrajetsBundle\Repository\TrajetRepository")
  * @ORM\Table(name="dpb_trajets", indexes={@ORM\Index(name="origine_idx", columns={"origine"})})
  */
 class Trajet implements JsonSerializable

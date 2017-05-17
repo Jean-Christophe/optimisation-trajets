@@ -570,13 +570,17 @@ function ajouterTrajet(trajet)
     var path = $("#loading").attr("data-path");
     $("#loading").show();
 
-    var data = JSON.stringify(trajet);
-    console.log(data);
+    var origine = trajet.origine;
+    var destination = trajet.destination;
+    var etapes = trajet.etapes;
+    var dateDepart = Math.round(trajet.dateDepart.getTime()/1000);
+    var dateArriveePrevue = Math.round(trajet.dateArriveePrevue.getTime()/1000);
 
     $.ajax({
         type: "POST",
         url: path,
-        data: "data=" + data,
+        data: {'origine': origine, 'destination': destination, 'etapes': etapes, 'dateDepart': dateDepart,
+            'dateArriveePrevue':dateArriveePrevue},
         cache: false,
         success: function(){
             alert("Succès. Ce trajet a bien été enregistré.");

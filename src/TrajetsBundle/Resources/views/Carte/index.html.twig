@@ -16,6 +16,7 @@
                                 <li><a href="{{ path('lieux_index') }}">Lieux</a></li>
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <li><a href="{{ path('utilisateurs_index') }}">Utilisateurs</a></li>
+                                    <li><a href="{{ path('trajets_index') }}">Trajets</a></li>
                                 {% endif %}
                             </ul>
                         </div>

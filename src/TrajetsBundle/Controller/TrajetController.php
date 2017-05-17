@@ -6,10 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\Date;
-use TrajetsBundle\Entity\Lieu;
 use TrajetsBundle\Entity\Trajet;
-use TrajetsBundle\Form\TrajetType;
+use TrajetsBundle\Form\TrajetsSearchType;
 
 /**
  * Trajet controller.
@@ -21,14 +19,30 @@ class TrajetController extends Controller
      * Lists all Trajet entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(new TrajetsSearchType());
 
-        $trajets = $em->getRepository('TrajetsBundle:Trajet')->findAll();
+        if($request->getMethod() == 'POST')
+        {
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() and $form->isValid())
+            {
+                $em = $this->getDoctrine()->getManager();
+                $data = $form->getData();
+                $dateDebut = $data['dateDebut'];
+                $dateFin = $data['dateFin'];
+                $trajets = $em->getRepository('TrajetsBundle:Trajet')->getTrajetsByDates($dateDebut, $dateFin);
+                return $this->render('trajet/index.html.twig', array(
+                    'trajets' => $trajets,
+                    'form' => $form->createView()
+                ));
+            }
+        }
 
         return $this->render('trajet/index.html.twig', array(
-            'trajets' => $trajets,
+            'form' => $form->createView()
         ));
     }
 
@@ -41,63 +55,46 @@ class TrajetController extends Controller
         // Vérifie si la méthode Ajax a été utilisée
         if($request->isXmlHttpRequest())
         {
-            $trajetJson = json_decode($request->get("data"), true);
+            $origine = $request->get('origine');
+
+            $destinationTableau = $request->get('destination');
+            $destinationId = $destinationTableau['id'];
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('TrajetsBundle:Lieu');
+            $destination = $repo->find($destinationId);
+
+            $etapes = [];
+            $etapesTableau = $request->get('etapes');
+            $etapesTableauLength = count($etapesTableau);
+            for($i = 0; $i < $etapesTableauLength; $i++)
+            {
+                $etape = $repo->find($etapesTableau[$i]);
+                $etapes[$i] = $etape;
+            }
+
+            $dateDepart = new \DateTime();
+            $dateDepart->setTimestamp(intval($request->get('dateDepart')));
+            $dateArriveePrevue = new \DateTime();
+            $dateArriveePrevue->setTimestamp(intval($request->get('dateArriveePrevue')));
 
             $trajet = new Trajet();
-            $trajet->setOrigine($trajetJson['origine']);
-            $trajet->setDestination($trajetJson['destination']);
-            $trajet->setEtapes($trajetJson['etapes']);
-            $trajet->setDateDepart($trajetJson['dateDepart']);
-            $trajet->setDateArriveePrevue($trajetJson['dateArriveePrevue']);
-            $trajet->setDateArrivee(null);
+            $trajet->setOrigine($origine);
+            $trajet->setDestination($destination);
+            $trajet->setEtapes($etapes);
+            $trajet->setDateDepart($dateDepart);
+            $trajet->setDateArriveePrevue($dateArriveePrevue);
             $trajet->setUtilisateur($this->getUser());
-            $trajet->setEstEffectue(false);
             $trajet->setEstActif(true);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($trajet);
-            $em->flush();
-            */
-            return new Response($request->get("data"));
-
-            /*
-            $lieu = $this->getDoctrine()->getRepository('TrajetsBundle:Lieu')->find(3);
-            $utilisateur = $this->getDoctrine()->getRepository('TrajetsBundle:Utilisateur')->find(3);
-            $trajet = new Trajet();
-            $trajet->setOrigine('test');
-            $trajet->setDestination($lieu);
-            $trajet->setDateDepart(new Date());
-            $trajet->setDateArriveePrevue(new Date());
-            $trajet->setUtilisateur($utilisateur);
             $trajet->setEstEffectue(false);
 
-            $em = $this->getDoctrine()->getManager();
             $em->persist($trajet);
             $em->flush();
-*/
-
+            return new Response($request->get("origine"));
         }
         else
         {
             return $this->redirectToRoute('trajets_index');
         }
-/*
-        $trajet = new Trajet();
-        $form = $this->createForm('TrajetsBundle\Form\TrajetType', $trajet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($trajet);
-            $em->flush();
-
-            return $this->redirectToRoute('trajets_show', array('id' => $trajet->getId()));
-        }
-
-        return $this->render('trajet/new.html.twig', array(
-            'trajet' => $trajet,
-            'form' => $form->createView(),
-        ));*/
     }
 
     /**

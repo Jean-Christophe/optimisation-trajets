@@ -1,49 +1,87 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
 {% block body %}
-    <h1>Trajet list</h1>
+<div class="container">
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+        Connecté en tant que {{ app.user.username }}
+        -
+        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+    {% else %}
+        <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+    {% endif %}
+    <h1 class="text-center">Gestion des trajets</h1>
+    <div class="row">
+        <h2>Rechercher des trajets</h2>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Origine</th>
-                <th>Datedepart</th>
-                <th>Datearriveeprevue</th>
-                <th>Datearrivee</th>
-                <th>Estactif</th>
-                <th>Esteffectue</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for trajet in trajets %}
-            <tr>
-                <td><a href="{{ path('trajets_show', { 'id': trajet.id }) }}">{{ trajet.id }}</a></td>
-                <td>{{ trajet.origine }}</td>
-                <td>{% if trajet.dateDepart %}{{ trajet.dateDepart|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if trajet.dateArriveePrevue %}{{ trajet.dateArriveePrevue|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if trajet.dateArrivee %}{{ trajet.dateArrivee|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if trajet.estActif %}Yes{% else %}No{% endif %}</td>
-                <td>{% if trajet.estEffectue %}Yes{% else %}No{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('trajets_show', { 'id': trajet.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('trajets_edit', { 'id': trajet.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        {{ form_start(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('trajets_new') }}">Create a new entry</a>
-        </li>
-    </ul>
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    {{ form_label(form.dateDebut)}}
+                    {% if not form.dateDebut.vars.valid %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form_errors(form.dateDebut) }}
+                        </div>
+                    {% endif %}
+                    {{ form_widget(form.dateDebut) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_label(form.dateFin)}}
+                    {% if not form.dateFin.vars.valid %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form_errors(form.dateFin) }}
+                        </div>
+                    {% endif %}
+                    {{ form_widget(form.dateFin) }}
+                </div>
+            </div>
+            <div id="bouton_valider" class="col-sm-12">
+                <input class="btn btn-lg btn-success" type="submit" value="Envoyer" />
+            </div>
+
+        {{ form_end(form) }}
+
+    </div>
+
+    {% if trajets is defined %}
+        <div class="row">
+            <h2 id="liste_trajets">Liste des trajets effectués</h2>
+            {% for trajet in trajets %}
+                <ul class="list-unstyled">
+                    <h4>Trajet de {{ trajet.origine }} à {{ trajet.destination.nom }}
+                        <a href="{{ path('trajets_edit', { 'id': trajet.id }) }}"><span class="glyphicon glyphicon-edit"></span></a>
+                    </h4>
+                    <li>Effectué par {{ trajet.utilisateur.prenom }} {{ trajet.utilisateur.nom }}.
+                        Départ : {{ trajet.dateDepart|date("d/m/Y, H:i") }}.
+                        Arrivée estimée : {{ trajet.dateArriveePrevue|date("H:i") }}
+                        {% if trajet.estEffectue %}
+                            Arrivée réelle : {{ trajet.dateArrivee|date("H:i") }}
+                        {% endif %}
+                        <br />Etapes :
+                        <ul>
+                        {% for etape in trajet.etapes %}
+                            <li>{{ etape.nom }}</li>
+                        {% endfor %}
+                        </ul>
+                        {% if trajet.estEffectue %}
+                            Trajet effectué<br />
+                        {%  else %}
+                            Trajet non effectué<br />
+                        {% endif %}
+                        Actif ?
+                        {% if trajet.estActif %}
+                        Oui
+                        {% else %}
+                        Non
+                        {% endif %}
+                    </li>
+                </ul>
+                <a href="#liste_trajets">Haut de page</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

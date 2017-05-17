@@ -131,8 +131,14 @@ class Utilisateur extends BaseUser implements \Serializable, \JsonSerializable
 
     function __toString()
     {
+        $roles = '';
+        foreach ($this->getRoles() as $role)
+        {
+            $roles .= $role . ' - ';
+        }
+
         return 'id= ' . $this->getId() . ', nom= ' . $this->getNom() . ', prenom= ' . $this->getPrenom() . ', e-mail= ' . $this->getEmail() .
-            ', password= ' . $this->getPassword() . ', roles= ' .$this->getRoles();
+            ', password= ' . $this->getPassword() . ', roles= ' .$roles;
     }
 
     /**
