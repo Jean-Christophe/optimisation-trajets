@@ -42,8 +42,17 @@
 
                 <div id="prepa_trajet">
                     <div id="boutons_balises" class="row">
+                        <div id="boutons_all" class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
+                            <h3></h3>
+                            <div class="form-group">
+                                <div class="row">
+                                    <input class="btn btn-success btn-sm col-xs-6" id="show_all" type="button" value="Montrer tout" />
+                                    <input class="btn btn-warning btn-sm col-xs-6" id="hide_all" type="button" value="Cacher tout" />
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
-                            <h3>Consignes</h3>
+                            <h3>Consignes:</h3>
                             <div class="form-group">
                                 <div class="row">
                                     <input class="btn btn-success btn-sm col-xs-6" id="show_consignes" type="button" value="Montrer" />
@@ -52,20 +61,11 @@
                             </div>
                         </div>
                         <div class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
-                            <h3>Boutiques</h3>
+                            <h3>Boutiques:</h3>
                             <div class="form-group">
                                 <div class="row">
                                     <input class="btn btn-success btn-sm col-xs-6" id="show_boutiques" type="button" value="Montrer" />
                                     <input class="btn btn-warning btn-sm col-xs-6" id="hide_boutiques" type="button" value="Cacher" />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="boutons_all" class="col-xs-4 col-sm-4 col-md-12 col-lg-12">
-                            <h3></h3>
-                            <div class="form-group">
-                                <div class="row">
-                                    <input class="btn btn-success btn-sm col-xs-6" id="show_all" type="button" value="Montrer tout" />
-                                    <input class="btn btn-warning btn-sm col-xs-6" id="hide_all" type="button" value="Cacher tout" />
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,11 @@
                         </div>
                     </div>
                 </div>
-                <div id="itineraire"></div>
+                <div id="itineraire">
+                    <div id="boutons_itineraire" class="row" data-path="{{ path('trajets_confirm') }}"></div>
+                    <div id="texte_itineraire"></div>
+                    <div id="boutons_itineraire_bas" class="row" data-path="{{ path('trajets_cancel') }}"></div>
+                </div>
             </div>
             <div id="fixed" class="col-sm-12 col-md-9">
                 <div id="map"></div>

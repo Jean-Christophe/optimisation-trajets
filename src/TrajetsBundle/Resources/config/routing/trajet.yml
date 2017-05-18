@@ -22,3 +22,13 @@ trajets_delete:
     path:     /{id}/delete
     defaults: { _controller: "TrajetsBundle:Trajet:delete" }
     methods:  DELETE
+
+trajets_cancel:
+    path:     /cancel
+    defaults: { _controller: "TrajetsBundle:Trajet:cancel" }
+    methods:  POST
+
+trajets_confirm:
+    path:     /confirm
+    defaults: { _controller: "TrajetsBundle:Trajet:confirm" }
+    methods:  POST

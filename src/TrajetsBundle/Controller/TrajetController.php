@@ -2,6 +2,7 @@
 
 namespace TrajetsBundle\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,27 +23,45 @@ class TrajetController extends Controller
     public function indexAction(Request $request)
     {
         $form = $this->createForm(new TrajetsSearchType());
+        $formTrajetsEnCours = $this->createFormBuilder()
+            ->add('validerEnCours', SubmitType::class,
+                [
+                    'label' => 'Visualiser les trajets en cours',
+                    'attr' => ['class' => 'btn btn-lg btn-success']
+                ]
+            )
+            ->getForm();
 
         if($request->getMethod() == 'POST')
         {
             $form->handleRequest($request);
+            $em = $this->getDoctrine()->getManager();
 
             if($form->isSubmitted() and $form->isValid())
             {
-                $em = $this->getDoctrine()->getManager();
                 $data = $form->getData();
                 $dateDebut = $data['dateDebut'];
                 $dateFin = $data['dateFin'];
                 $trajets = $em->getRepository('TrajetsBundle:Trajet')->getTrajetsByDates($dateDebut, $dateFin);
                 return $this->render('trajet/index.html.twig', array(
+                    'trajets' => $trajets
+                ));
+            }
+
+            $formTrajetsEnCours->handleRequest($request);
+            if($formTrajetsEnCours->isSubmitted() and $formTrajetsEnCours->isValid())
+            {
+                $trajets = $em->getRepository('TrajetsBundle:Trajet')->getTrajetsEnCours();
+                return $this->render('trajet/index.html.twig', array(
                     'trajets' => $trajets,
-                    'form' => $form->createView()
+                    'enCours' => true
                 ));
             }
         }
 
         return $this->render('trajet/index.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'formTrajetsEnCours' => $formTrajetsEnCours->createView()
         ));
     }
 
@@ -90,6 +109,44 @@ class TrajetController extends Controller
             $em->persist($trajet);
             $em->flush();
             return new Response($request->get("origine"));
+        }
+        else
+        {
+            return $this->redirectToRoute('trajets_index');
+        }
+    }
+
+    public function cancelAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('TrajetsBundle:Trajet');
+            $trajet = $repo->getLastTrajetByUtilisateur($this->getUser());
+            $trajet->setEstActif(false);
+            $em->persist($trajet);
+            $em->flush();
+            return new Response('Cancel OK');
+        }
+        else
+        {
+            return $this->redirectToRoute('trajets_index');
+        }
+    }
+
+    public function confirmAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('TrajetsBundle:Trajet');
+            $trajet = $repo->getLastTrajetByUtilisateur($this->getUser());
+            $trajet->setEstActif(false);
+            $trajet->setEstEffectue(true);
+            $trajet->setDateArrivee(new \DateTime());
+            $em->persist($trajet);
+            $em->flush();
+            return new Response('Confirm OK');
         }
         else
         {

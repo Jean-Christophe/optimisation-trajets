@@ -22,4 +22,27 @@ class TrajetRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('dateFin', $dateFin);
         return $query->getResult();
     }
+
+    public function getTrajetsEnCours()
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            'SELECT t FROM TrajetsBundle:Trajet t WHERE t.estEffectue = FALSE AND t.estActif = TRUE'
+        );
+        return $query->getResult();
+    }
+
+    public function getLastTrajetByUtilisateur($utilisateur)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQueryBuilder()
+            ->select('t')
+            ->from('TrajetsBundle:Trajet', 't')
+            ->where('t.utilisateur = :utilisateur')
+            ->setParameter('utilisateur', $utilisateur)
+            ->orderBy('t.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+        return $query->getOneOrNullResult();
+    }
 }

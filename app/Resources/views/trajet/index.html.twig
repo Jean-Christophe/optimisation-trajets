@@ -13,42 +13,60 @@
         <a href="{{ path('fos_user_security_login') }}">Connexion</a>
     {% endif %}
     <h1 class="text-center">Gestion des trajets</h1>
-    <div class="row">
-        <h2>Rechercher des trajets</h2>
-
-        {{ form_start(form) }}
-
-            <div class="form-group row">
-                <div class="col-sm-6">
-                    {{ form_label(form.dateDebut)}}
-                    {% if not form.dateDebut.vars.valid %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ form_errors(form.dateDebut) }}
-                        </div>
-                    {% endif %}
-                    {{ form_widget(form.dateDebut) }}
+    {% if form is defined %}
+        <div class="row">
+            <h2>Rechercher des trajets</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Trajets en cours</h3>
+                    <div class="form-group">
+                        {{ form_start(formTrajetsEnCours) }}
+                        {{ form_widget(formTrajetsEnCours) }}
+                        {{ form_end(formTrajetsEnCours) }}
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    {{ form_label(form.dateFin)}}
-                    {% if not form.dateFin.vars.valid %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ form_errors(form.dateFin) }}
+                <div class="col-md-6">
+                    <h3>Recherche par dates</h3>
+
+                    {{ form_start(form) }}
+
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                {{ form_label(form.dateDebut)}}
+                                {% if not form.dateDebut.vars.valid %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ form_errors(form.dateDebut) }}
+                                    </div>
+                                {% endif %}
+                                {{ form_widget(form.dateDebut) }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form_label(form.dateFin)}}
+                                {% if not form.dateFin.vars.valid %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ form_errors(form.dateFin) }}
+                                    </div>
+                                {% endif %}
+                                {{ form_widget(form.dateFin) }}
+                            </div>
                         </div>
-                    {% endif %}
-                    {{ form_widget(form.dateFin) }}
+                        <div id="bouton_valider" class="col-sm-12">
+                            <input class="btn btn-success" type="submit" value="Envoyer" />
+                        </div>
+
+                    {{ form_end(form) }}
                 </div>
             </div>
-            <div id="bouton_valider" class="col-sm-12">
-                <input class="btn btn-lg btn-success" type="submit" value="Envoyer" />
-            </div>
-
-        {{ form_end(form) }}
-
-    </div>
+        </div>
+    {% endif %}
 
     {% if trajets is defined %}
         <div class="row">
-            <h2 id="liste_trajets">Liste des trajets effectués</h2>
+            {%  if enCours is defined and enCours == true %}
+                <h2 id="liste_trajets">Liste des trajets en cours</h2>
+            {%  else %}
+                <h2 id="liste_trajets">Liste des trajets effectués</h2>
+            {% endif %}
             {% for trajet in trajets %}
                 <ul class="list-unstyled">
                     <h4>Trajet de {{ trajet.origine }} à {{ trajet.destination.nom }}
