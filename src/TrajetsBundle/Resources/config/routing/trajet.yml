@@ -32,3 +32,8 @@ trajets_confirm:
     path:     /confirm
     defaults: { _controller: "TrajetsBundle:Trajet:confirm" }
     methods:  POST
+
+trajets_confirm_step:
+    path:     /confirm-step
+    defaults: { _controller: "TrajetsBundle:Trajet:confirmStep" }
+    methods:  POST

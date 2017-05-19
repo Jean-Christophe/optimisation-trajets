@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Accès interdit{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Accès non autorisé</h1>
+
+        <p>Vous n'êtes pas autorisé à accéder à cette page.</p>
+        <p>Cliquez sur <a href="{{ path('fos_user_security_logout') }}">ce lien</a> pour revenir à l'écran d'authentification.</p>
+    </div>
+{% endblock %}

@@ -20,6 +20,7 @@ class TrajetsSearchType extends AbstractType
             ->add('dateDebut', 'datetime',
                 ['label' => 'Date de début de recherche',
                     'widget' => 'single_text',
+                    'format' => 'dd/MM/yy',
                     'attr' => [
                         'class' => 'form-control col-lg-6',
                         'placeholder' => 'JJ/MM/YYYY'
@@ -28,6 +29,7 @@ class TrajetsSearchType extends AbstractType
             ->add('dateFin', 'datetime',
                 ['label' => 'Date de fin de recherche',
                     'widget' => 'single_text',
+                    'format' => 'dd/MM/yy',
                     'attr' => [
                         'class' => 'form-control col-lg-6',
                         'placeholder' => 'JJ/MM/YYYY'

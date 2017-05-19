@@ -500,18 +500,17 @@ function displayDirections(){
             boutons.innerHTML = '<div class="col-xs-6"><button id="bouton_retour" class="btn btn-sm btn-danger" onclick="reinitialiser()">&larr; Retour</button></div>';
             boutons.innerHTML += '<div class="col-xs-6 text-right"><button id="bouton_enregistrer_trajet" class="btn btn-sm btn-success text-right" onclick="ajouterTrajet(trajet)">J\'y vais !</button></div>';
             boutons.innerHTML += '<hr />';
-            var resume = document.getElementById('texte_itineraire');
+            var resume = document.getElementById('resume_itineraire');
             resume.innerHTML = 'Itinéraire de ' + depart.name + '<br />';
             resume.innerHTML += 'à <br />';
             resume.innerHTML +=  destination.nom + ', ' + destination.ville + '<br />';
             resume.innerHTML += nbKilometres + ' km - ' + minutes + ' minutes<br />';
             resume.innerHTML += 'Départ : ' + heuresDepart + 'h' + minutesDepart + '<br />';
             resume.innerHTML += 'Estimation arrivée : ' + heuresArrivee + 'h' + minutesArrivee;
-            resume.innerHTML += detailResume;
+            document.getElementById('instructions_itineraires').innerHTML += detailResume;
 
             document.getElementById('boutons_itineraire').innerHTML = boutons.innerHTML;
-            document.getElementById('texte_itineraire').innerHTML = resume.innerHTML;
-
+            //document.getElementById('texte_itineraire').innerHTML = resume.innerHTML;
         } else{
             window.alert('Erreur : ' + status);
         }
@@ -613,6 +612,16 @@ function afficherBoutonsFinTrajet()
     boutonsBas.innerHTML = '<div class="col-xs-6"><button class="btn btn-sm btn-danger" onclick="annulerTrajet()">Trajet non effectué</button></div>';
     boutonsBas.innerHTML += '<div class="col-xs-6 text-right"><button class="btn btn-sm btn-success text-right" onclick="cloturerTrajet()">Terminé</button></div>';
     boutonsBas.innerHTML += '<hr />';
+
+    var divEtapes = document.getElementById('etapes_itineraire');
+    if(etapes.length > 0)
+    {
+        divEtapes.innerHTML = 'Etapes :';
+        for(var n = 0; n < etapes.length; n++)
+        {
+            divEtapes.innerHTML += '<p>- ' + etapes[n].step.nom + '<button class="btn btn-xs btn-success" onclick="validerEtape(etapes['+ n +'].step.id)">OK</button></p>'
+        }
+    }
 }
 
 function annulerTrajet() {
@@ -651,6 +660,27 @@ function cloturerTrajet() {
         },
         error: function(){
             alert("Une erreur s'est produite. Ce trajet n'a pas pu être clôturé.");
+            $("#loading").hide();
+        }
+    });
+}
+
+function validerEtape(idEtape)
+{
+    var path = $("#etapes_itineraire").attr("data-path");
+    $("#loading").show();
+
+    $.ajax({
+        type: "POST",
+        url: path,
+        data: {'idLieu': idEtape},
+        cache: false,
+        success: function(){
+            alert("Etape validée.");
+            $("#loading").hide();
+        },
+        error: function(){
+            alert("Une erreur s'est produite. L'étape n'a pas été validée.");
             $("#loading").hide();
         }
     });

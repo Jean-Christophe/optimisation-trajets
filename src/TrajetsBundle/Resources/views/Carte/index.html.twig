@@ -145,7 +145,11 @@
                 </div>
                 <div id="itineraire">
                     <div id="boutons_itineraire" class="row" data-path="{{ path('trajets_confirm') }}"></div>
-                    <div id="texte_itineraire"></div>
+                    <div id="texte_itineraire">
+                        <div id="resume_itineraire"></div>
+                        <div id="etapes_itineraire" data-path="{{ path('trajets_confirm_step') }}"></div>
+                        <div id="instructions_itineraires"></div>
+                    </div>
                     <div id="boutons_itineraire_bas" class="row" data-path="{{ path('trajets_cancel') }}"></div>
                 </div>
             </div>

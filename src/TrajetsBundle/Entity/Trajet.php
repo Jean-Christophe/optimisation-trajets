@@ -45,11 +45,7 @@ class Trajet implements JsonSerializable
     private $destination;
     /**
      * @Assert\NotBlank()
-     * @ORM\ManyToMany(targetEntity="Lieu")
-     * @ORM\JoinTable(name="trajet_etape",
-     *     joinColumns={@ORM\JoinColumn(name="trajet_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="etape_id", referencedColumnName="id")}
-     *     )
+     * @ORM\OneToMany(targetEntity="Etape", mappedBy="trajet", cascade={"persist"})
      */
     private $etapes;
     /**
@@ -273,3 +269,12 @@ class Trajet implements JsonSerializable
         return $vars;
     }
 }
+
+/*
+     * @Assert\NotBlank()
+     * @ORM\ManyToMany(targetEntity="Lieu")
+     * @ORM\JoinTable(name="trajet_etape",
+     *     joinColumns={@ORM\JoinColumn(name="trajet_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="etape_id", referencedColumnName="id")}
+     *     )
+     */

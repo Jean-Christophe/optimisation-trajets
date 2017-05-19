@@ -7,12 +7,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use TrajetsBundle\Entity\Etape;
 use TrajetsBundle\Entity\Trajet;
 use TrajetsBundle\Form\TrajetsSearchType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * Trajet controller.
- *
+ * @Security("has_role('ROLE_ADMIN')")
  */
 class TrajetController extends Controller
 {
@@ -82,15 +84,6 @@ class TrajetController extends Controller
             $repo = $em->getRepository('TrajetsBundle:Lieu');
             $destination = $repo->find($destinationId);
 
-            $etapes = [];
-            $etapesTableau = $request->get('etapes');
-            $etapesTableauLength = count($etapesTableau);
-            for($i = 0; $i < $etapesTableauLength; $i++)
-            {
-                $etape = $repo->find($etapesTableau[$i]);
-                $etapes[$i] = $etape;
-            }
-
             $dateDepart = new \DateTime();
             $dateDepart->setTimestamp(intval($request->get('dateDepart')));
             $dateArriveePrevue = new \DateTime();
@@ -99,13 +92,26 @@ class TrajetController extends Controller
             $trajet = new Trajet();
             $trajet->setOrigine($origine);
             $trajet->setDestination($destination);
-            $trajet->setEtapes($etapes);
             $trajet->setDateDepart($dateDepart);
             $trajet->setDateArriveePrevue($dateArriveePrevue);
             $trajet->setUtilisateur($this->getUser());
             $trajet->setEstActif(true);
             $trajet->setEstEffectue(false);
 
+            $repo = $em->getRepository('TrajetsBundle:Etape');
+            $etapes = [];
+            $etapesTableau = $request->get('etapes');
+            $etapesTableauLength = count($etapesTableau);
+            for($i = 0; $i < $etapesTableauLength; $i++)
+            {
+                $etape = new Etape();
+                $etape->setTrajet($trajet);
+                $etape->setLieu($em->getRepository('TrajetsBundle:Lieu')->find($etapesTableau[$i]));
+                $etape->setEstCompletee(false);
+                $etapes[$i] = $etape;
+            }
+
+            $trajet->setEtapes($etapes);
             $em->persist($trajet);
             $em->flush();
             return new Response($request->get("origine"));
@@ -154,6 +160,30 @@ class TrajetController extends Controller
         }
     }
 
+    public function confirmStepAction(Request $request)
+    {
+        if($request->isXmlHttpRequest())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('TrajetsBundle:Trajet');
+            $trajet = $repo->getLastTrajetByUtilisateur($this->getUser());
+            $repo = $em->getRepository('TrajetsBundle:Lieu');
+            $idLieu = $request->get('idLieu');
+            $lieu = $repo->find($idLieu);
+            $repo = $em->getRepository('TrajetsBundle:Etape');
+            $etape = $repo->getByTrajetAndLieu($trajet, $lieu);
+            $etape->setEstCompletee(true);
+
+            $em->persist($etape);
+            $em->flush();
+            return new Response('Confirm Step OK');
+        }
+        else
+        {
+            return $this->redirectToRoute('trajets_index');
+        }
+    }
+
     /**
      * Finds and displays a Trajet entity.
      *
@@ -183,7 +213,7 @@ class TrajetController extends Controller
             $em->persist($trajet);
             $em->flush();
 
-            return $this->redirectToRoute('trajets_edit', array('id' => $trajet->getId()));
+            return $this->redirectToRoute('trajets_edit', array('id' => $trajet->getId(), 'message' => 'La modification a été effectuée avec succès.'));
         }
 
         return $this->render('trajet/edit.html.twig', array(

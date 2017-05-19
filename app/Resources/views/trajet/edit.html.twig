@@ -1,21 +1,83 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
 {% block body %}
-    <h1>Trajet edit</h1>
+<div class="container">
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+        Connecté en tant que {{ app.user.username }}
+        -
+        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+    {% else %}
+        <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+    {% endif %}
+    <h1 class="text-center">Modifier l'itinéraire</h1>
+
+    {% if app.request.query.get("message") is defined and app.request.query.get("message") is not empty %}
+        <div id="message" class="alert alert-info">
+            <p>{{ app.request.query.get("message") }}</p>
+        </div>
+    {% endif %}
+
+    <h4>Trajet de {{ trajet.origine }} à {{ trajet.destination.nom }}</h4>
+    <p>Effectué par {{ trajet.utilisateur.prenom }} {{ trajet.utilisateur.nom }}</p>
+    Etapes :
+    <ul>
+        {% for etape in trajet.etapes %}
+            <li>{{ etape.lieu.nom }} -
+                {% if etape.estCompletee %}
+                    Validée
+                {% else %}
+                    Non validée
+                {% endif %}</li>
+        {% endfor %}
+    </ul>
+    <p>Heure de départ : {{ trajet.dateDepart|date('d/m/Y, H:i') }}</p>
+    <p>Heure d'arrivée prévue : {{ trajet.dateArriveePrevue|date('H:i') }}</p>
+    {% if trajet.dateArrivee is not null %}
+        <p>Heure d'arrivée effective : {{ trajet.dateArrivee|date('H:i') }}</p>
+    {% endif %}
 
     {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
+    <div class="form-group row">
+        <div class="col-sm-4">
+            {{ form_label(edit_form.estActif)}}
+            {% if not edit_form.estActif.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(form.estActif) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.estActif) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_label(edit_form.estEffectue)}}
+            {% if not edit_form.estEffectue.vars.valid %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form_errors(edit_form.estEffectue) }}
+                </div>
+            {% endif %}
+            {{ form_widget(edit_form.estEffectue) }}
+        </div>
+        <div id="bouton_valider" class="col-sm-4">
+            <input class="btn btn-lg btn-success" type="submit" value="Modifier" />
+        </div>
+    </div>
     {{ form_end(edit_form) }}
 
     <ul>
         <li>
-            <a href="{{ path('trajets_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
+            <a href="{{ path('trajets_index') }}">Retour à la gestion des trajets</a>
         </li>
     </ul>
+    <div>
+        {{ form_start(delete_form) }}
+        <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Attention : </span>
+            <button class="btn btn-danger" type="submit" onclick="return(confirm('Etes-vous sûr de vouloir supprimer ce trajet? La suppression est irréversible.'));">Supprimer ce trajet</button>
+        </div>
+        {{ form_end(delete_form) }}
+    </div>
+</div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace TrajetsBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,15 +16,27 @@ class TrajetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('origine')
-            ->add('dateDepart', 'datetime')
-            ->add('dateArriveePrevue', 'datetime')
-            ->add('dateArrivee', 'datetime')
-            ->add('estActif')
-            ->add('estEffectue')
-            ->add('destination')
-            ->add('etapes')
-            ->add('utilisateur')
+            //->add('origine')
+            //->add('dateDepart', 'datetime')
+            //->add('dateArriveePrevue', 'datetime')
+            //->add('dateArrivee', 'datetime')
+            ->add('estActif', 'choice',
+                ['label' => 'Trajet en cours ?',
+                    'attr' => ['class' => 'form-control'],
+                    'choices' => [
+                        true => 'Oui',
+                        false => 'Non'
+                    ]])
+            ->add('estEffectue', 'choice',
+                ['label' => 'Trajet clôturé ?',
+                    'attr' => ['class' => 'form-control'],
+                    'choices' => [
+                        true => 'Oui',
+                        false => 'Non'
+                    ]])
+            //->add('destination')
+            //->add('etapes')
+            //->add('utilisateur')
         ;
     }
     

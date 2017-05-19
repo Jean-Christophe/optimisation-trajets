@@ -81,13 +81,18 @@
                         <br />Etapes :
                         <ul>
                         {% for etape in trajet.etapes %}
-                            <li>{{ etape.nom }}</li>
+                            <li>{{ etape.lieu.nom }} -
+                            {% if etape.estCompletee %}
+                                Validée
+                            {% else %}
+                                Non validée
+                            {% endif %}</li>
                         {% endfor %}
                         </ul>
                         {% if trajet.estEffectue %}
-                            Trajet effectué<br />
+                            Trajet clôturé<br />
                         {%  else %}
-                            Trajet non effectué<br />
+                            Trajet non clôturé<br />
                         {% endif %}
                         Actif ?
                         {% if trajet.estActif %}
