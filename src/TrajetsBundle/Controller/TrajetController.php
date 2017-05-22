@@ -14,13 +14,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * Trajet controller.
- * @Security("has_role('ROLE_ADMIN')")
  */
 class TrajetController extends Controller
 {
     /**
      * Lists all Trajet entities.
-     *
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function indexAction(Request $request)
     {
@@ -45,7 +44,7 @@ class TrajetController extends Controller
                 $dateDebut = $data['dateDebut'];
                 $dateFin = $data['dateFin'];
                 $trajets = $em->getRepository('TrajetsBundle:Trajet')->getTrajetsByDates($dateDebut, $dateFin);
-                return $this->render('trajet/index.html.twig', array(
+                return $this->render('trajet/liste-trajets.html.twig', array(
                     'trajets' => $trajets
                 ));
             }
@@ -54,7 +53,7 @@ class TrajetController extends Controller
             if($formTrajetsEnCours->isSubmitted() and $formTrajetsEnCours->isValid())
             {
                 $trajets = $em->getRepository('TrajetsBundle:Trajet')->getTrajetsEnCours();
-                return $this->render('trajet/index.html.twig', array(
+                return $this->render('trajet/liste-trajets.html.twig', array(
                     'trajets' => $trajets,
                     'enCours' => true
                 ));
@@ -69,7 +68,7 @@ class TrajetController extends Controller
 
     /**
      * Creates a new Trajet entity.
-     *
+     * @Security("has_role('ROLE_USER')")
      */
     public function newAction(Request $request)
     {
@@ -122,6 +121,11 @@ class TrajetController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @Security("has_role('ROLE_USER')")
+     */
     public function cancelAction(Request $request)
     {
         if($request->isXmlHttpRequest())
@@ -140,6 +144,11 @@ class TrajetController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @Security("has_role('ROLE_USER')")
+     */
     public function confirmAction(Request $request)
     {
         if($request->isXmlHttpRequest())
@@ -160,6 +169,11 @@ class TrajetController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @Security("has_role('ROLE_USER')")
+     */
     public function confirmStepAction(Request $request)
     {
         if($request->isXmlHttpRequest())
@@ -185,22 +199,8 @@ class TrajetController extends Controller
     }
 
     /**
-     * Finds and displays a Trajet entity.
-     *
-     */
-    public function showAction(Trajet $trajet)
-    {
-        $deleteForm = $this->createDeleteForm($trajet);
-
-        return $this->render('trajet/show.html.twig', array(
-            'trajet' => $trajet,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
      * Displays a form to edit an existing Trajet entity.
-     *
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function editAction(Request $request, Trajet $trajet)
     {
@@ -225,7 +225,7 @@ class TrajetController extends Controller
 
     /**
      * Deletes a Trajet entity.
-     *
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, Trajet $trajet)
     {

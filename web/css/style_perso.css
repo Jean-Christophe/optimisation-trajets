@@ -153,3 +153,10 @@ h1{
     display: none;
 }
 
+#form_validerEnCours{
+    margin-top: 15px;
+}
+
+.non_cloture, .non_validee{
+    color: red;
+}

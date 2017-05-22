@@ -45,7 +45,7 @@ class Trajet implements JsonSerializable
     private $destination;
     /**
      * @Assert\NotBlank()
-     * @ORM\OneToMany(targetEntity="Etape", mappedBy="trajet", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Etape", mappedBy="trajet", cascade={"persist", "remove"})
      */
     private $etapes;
     /**

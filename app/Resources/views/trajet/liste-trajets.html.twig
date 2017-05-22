@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Optimisation de trajets - Admin{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        {% include 'TrajetsBundle:Includes:navbar.html.twig' %}
+        Connecté en tant que {{ app.user.username }}
+        -
+        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+    {% else %}
+        <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+    {% endif %}
+    <h1 class="text-center">Liste des trajets</h1>
+    <div class="row">
+        {%  if enCours is defined and enCours == true %}
+            <h2 id="liste_trajets" class="col-xs-10">Liste des trajets en cours</h2>
+        {%  else %}
+            <h2 id="liste_trajets" class="col-xs-10">Liste des trajets effectués</h2>
+        {% endif %}
+        <a class="col-xs-offset-1 col-xs-1" href="{{ path('trajets_index') }}" style="vertical-align: bottom">
+            <button class="btn btn-success">Retour</button>
+        </a>
+    </div>
+    <div class="row">
+        {% for trajet in trajets %}
+            <ul class="list-unstyled">
+                <h4>Trajet de {{ trajet.origine }} à {{ trajet.destination.nom }}
+                    <a href="{{ path('trajets_edit', { 'id': trajet.id }) }}"><span class="glyphicon glyphicon-edit"></span></a>
+                </h4>
+                <li>Effectué par {{ trajet.utilisateur.prenom }} {{ trajet.utilisateur.nom }}.
+                    Départ : {{ trajet.dateDepart|date("d/m/Y, H:i") }}.
+                    Arrivée estimée : {{ trajet.dateArriveePrevue|date("H:i") }}
+                    {% if trajet.estEffectue %}
+                        Arrivée réelle : {{ trajet.dateArrivee|date("H:i") }}
+                    {% endif %}
+                    <br />Etapes :
+                    <ul>
+                        {% for etape in trajet.etapes %}
+                            {% if etape.estCompletee %}
+                                <li>
+                                    {{ etape.lieu.nom }} - Validée
+                                </li>
+                            {% else %}
+                                <li class="non_validee">
+                                    {{ etape.lieu.nom }} - Non validée
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% if trajet.estEffectue %}
+                        <p>Trajet clôturé</p>
+                    {%  else %}
+                        <p class="non_cloture">Trajet non clôturé</p>
+                    {% endif %}
+                    Trajet en cours ?
+                    {% if trajet.estActif %}
+                        Oui
+                    {% else %}
+                        Non
+                    {% endif %}
+                </li>
+            </ul>
+            <a href="#liste_trajets">Haut de page</a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

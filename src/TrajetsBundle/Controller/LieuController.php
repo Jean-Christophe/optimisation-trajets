@@ -25,8 +25,6 @@ class LieuController extends Controller
         $boutiques = $repository->findBy(array('label' => 'B'));
         $consignes = $repository->findBy(array('label' => 'C'));
 
-        //$lieus = $em->getRepository('TrajetsBundle:Lieu')->findAll();
-
         return $this->render('lieu/index.html.twig', array(
             'boutiques' => $boutiques,
             'consignes' => $consignes

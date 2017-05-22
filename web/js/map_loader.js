@@ -34,7 +34,7 @@ function initMap() {
     initButtonsEvents();
 
     // Départ par défaut : les bureaux
-    depart = {name: "Dépôt", position: {lat: 48.10926, lng: -1.63429}};
+    depart = {name: "Parc Lorans", position: {lat: 48.10926, lng: -1.63429}};
     // Destination par défaut : le premier élément de la liste
     destination = getLocation(1);
 
@@ -209,7 +209,9 @@ function reinitialiser(){
     document.getElementById('prepa_trajet').style.display = "block";
     document.getElementById('resume_trajet').style.display = "block";
     document.getElementById('boutons_itineraire').innerHTML = '';
-    document.getElementById('texte_itineraire').innerHTML = '';
+    document.getElementById('resume_itineraire').innerHTML = '';
+    document.getElementById('etapes_itineraire').innerHTML = '';
+    document.getElementById('instructions_itineraires').innerHTML = '';
     document.getElementById('boutons_itineraire_bas').innerHTML = '';
     $("#loading").hide();
 
@@ -231,7 +233,7 @@ function getHeureDepart(){
             heureDepart.setMinutes(heureDepartTableau[1]);
         }
         else{
-            alert('L\'heure de départ n\'est pas au bon format (hh:mm)');
+            alert('L\'heure de départ n\'est pas au bon format (hh:mm). L\'itinéraire a été calculé à partir de l\'heure actuelle.');
         }
     }
     return heureDepart;
@@ -398,8 +400,6 @@ function addStep(id) {
     var wayPoint = {location: coordEtape, stopover: true};
     var etape = {waypoint: wayPoint, step: step};
     etapes.push(etape);
-    console.log(etape);
-    console.log(etapes);
     afficherEtape();
 }
 
@@ -427,12 +427,12 @@ function getDuree(nbSecondes, nbEtapes){
  */
 function displayDirections(){
     hideAll();
+    markerDepart.setMap(null);
     document.getElementById('prepa_trajet').style.display = 'none';
 
     var positionDestination = {lat: destination.latitude, lng: destination.longitude};
     var wayPoints = [];
-    for(var i = 0; i < etapes.length; i++)
-    {
+    for (var i = 0; i < etapes.length; i++) {
         wayPoints.push(etapes[i].waypoint);
     }
     var mode = document.getElementById('moyen_locomotion').value;
@@ -445,9 +445,8 @@ function displayDirections(){
         drivingOptions: {
             departureTime: getHeureDepart()
         }
-    }, function(response, status) {
-        if(status === google.maps.DirectionsStatus.OK){
-            console.log(response);
+    }, function (response, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
             directionsDisplay = new google.maps.DirectionsRenderer({
                 map: map,
                 directions: response,
@@ -458,7 +457,7 @@ function displayDirections(){
             var nbMetres = 0;
             var nbSecondes = 0;
             var detailResume = '';
-            for(var i = 0; i < route.legs.length; i++){
+            for (var i = 0; i < route.legs.length; i++) {
                 nbMetres += route.legs[i].distance.value;
                 nbSecondes += route.legs[i].duration.value;
                 var routeSegment = i + 1;
@@ -470,7 +469,7 @@ function displayDirections(){
                 detailResume += route.legs[i].end_address + '<br />';
                 detailResume += route.legs[i].distance.text + '<br />';
                 detailResume += route.legs[i].duration.text + '<br /><hr />';
-                for(var j = 0; j < route.legs[i].steps.length; j++) {
+                for (var j = 0; j < route.legs[i].steps.length; j++) {
                     detailResume += '<p>' + route.legs[i].steps[j].instructions + '</p>';
                 }
             }
@@ -481,20 +480,22 @@ function displayDirections(){
             var dateDepart = new Date(valeurDepart);
             var heuresDepart = dateDepart.getHours();
             var minutesDepart = dateDepart.getMinutes();
-            if(minutesDepart < 10){
+            if (minutesDepart < 10) {
                 minutesDepart = '0' + minutesDepart;
             }
             var dateArrivee = new Date(valeurArrivee);
             var heuresArrivee = dateArrivee.getHours();
             var minutesArrivee = dateArrivee.getMinutes();
-            if(minutesArrivee < 10){
+            if (minutesArrivee < 10) {
                 minutesArrivee = '0' + minutesArrivee;
             }
             var nbKilometres = nbMetres / 1000;
             var minutes = Math.floor(duree / 60);
 
-            trajet = {origine: depart.name, destination: destination, etapes: steps, dateDepart: dateDepart,
-                dateArriveePrevue: dateArrivee, dateArrivee: null, utilisateur: null, realise: false};
+            trajet = {
+                origine: depart.name, destination: destination, etapes: steps, dateDepart: dateDepart,
+                dateArriveePrevue: dateArrivee, dateArrivee: null, utilisateur: null, realise: false
+            };
 
             var boutons = document.getElementById('boutons_itineraire');
             boutons.innerHTML = '<div class="col-xs-6"><button id="bouton_retour" class="btn btn-sm btn-danger" onclick="reinitialiser()">&larr; Retour</button></div>';
@@ -503,15 +504,22 @@ function displayDirections(){
             var resume = document.getElementById('resume_itineraire');
             resume.innerHTML = 'Itinéraire de ' + depart.name + '<br />';
             resume.innerHTML += 'à <br />';
-            resume.innerHTML +=  destination.nom + ', ' + destination.ville + '<br />';
-            resume.innerHTML += nbKilometres + ' km - ' + minutes + ' minutes<br />';
+            resume.innerHTML += destination.nom + ', ' + destination.ville + '<br />';
+            var heures = Math.floor(minutes / 60);
+            minutes = minutes % 60;
+            resume.innerHTML += nbKilometres + ' km - ' + heures + ' heure(s) ' + minutes + ' minute(s)<br />';
             resume.innerHTML += 'Départ : ' + heuresDepart + 'h' + minutesDepart + '<br />';
             resume.innerHTML += 'Estimation arrivée : ' + heuresArrivee + 'h' + minutesArrivee;
-            document.getElementById('instructions_itineraires').innerHTML += detailResume;
 
+            document.getElementById('instructions_itineraires').innerHTML += detailResume;
             document.getElementById('boutons_itineraire').innerHTML = boutons.innerHTML;
-            //document.getElementById('texte_itineraire').innerHTML = resume.innerHTML;
-        } else{
+            var divEtapes = document.getElementById('etapes_itineraire');
+            divEtapes.innerHTML = 'Etapes :';
+            for(var n = 0; n < etapes.length; n++){
+                divEtapes.innerHTML += '<p>- ' + etapes[n].step.nom + '</p>';
+            }
+
+        } else {
             window.alert('Erreur : ' + status);
         }
     });
@@ -646,23 +654,28 @@ function annulerTrajet() {
 }
 
 function cloturerTrajet() {
+    var reponse = confirm("Etes-vous sûr(e) de vouloir clôturer le trajet?\n" +
+        "Avez-vous validé toutes les étapes?");
+    if(reponse === true)
+    {
+        var path = $("#boutons_itineraire").attr("data-path");
+        $("#loading").show();
 
-    var path = $("#boutons_itineraire").attr("data-path");
-    $("#loading").show();
-
-    $.ajax({
-        type: "POST",
-        url: path,
-        cache: false,
-        success: function(){
-            alert("Merci. Ce trajet est maintenant clôturé.");
-            $("#loading").hide();
-        },
-        error: function(){
-            alert("Une erreur s'est produite. Ce trajet n'a pas pu être clôturé.");
-            $("#loading").hide();
-        }
-    });
+        $.ajax({
+            type: "POST",
+            url: path,
+            cache: false,
+            success: function(){
+                alert("Merci. Ce trajet est maintenant clôturé.");
+                $("#loading").hide();
+            },
+            error: function(){
+                alert("Une erreur s'est produite. Ce trajet n'a pas pu être clôturé.");
+                $("#loading").hide();
+            }
+        });
+        reinitialiser();
+    }
 }
 
 function validerEtape(idEtape)
